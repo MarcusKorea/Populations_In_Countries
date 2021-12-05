@@ -1,0 +1,45 @@
+* {
+  box-sizing: border-box;
+  font-family: Ubuntu, sans-serif;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+.box {
+  margin-left: 15px;
+}
+
+.filters .panel-body {
+  padding: 0;
+}
+
+.filters {
+  margin-top: 5px;
+}
+
+select {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  color: #8e979f;
+  outline: none;
+}
+
+#map {
+  float: center;
+  margin-left:15px;
+  height: 300px;
+  width: 97%;
+}
+
+/* Set Pop Up Style */
+h3 {
+  font-size: medium;
+}
+
+p {
+  font-size: small;
+}
