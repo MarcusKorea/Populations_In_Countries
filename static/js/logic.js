@@ -38,25 +38,9 @@ function chooseColor(totalPopulation) {
   }
 }
 
-// fetchJSON('countries.geojson').then(function(data) { 
-//   console.log(data);
-//   return data });
-
-d3.json("https://s3.amazonaws.com/rawstore.datahub.io/23f420f929e0e09c39d916b8aaa166fb.geojson").then(function(response) {
-  console.log(response);
-});
-
-// d3.json("countries.geojson").then((importedData) => {
-//   console.log(importedData);
-// });
-
-// var geojson = new L.GeoJSON.AJAX("countries.geojson");
-// geojson.on('data:loaded', function(){
-// geojson.addTo(mymap);
-// });
 
 // Grabbing our GeoJSON data..
-d3.json(link, function(data) {
+d3.json(link).then(function(data) {
   // Creating a geoJSON layer with the retrieved data
   console.log(data)
   geoJson = L.geoJson(data, {
@@ -65,7 +49,7 @@ d3.json(link, function(data) {
       return {
         color: "white",
         // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
-        fillColor: white,  //chooseColor(features.ADMIN[0]),
+        fillColor: "white",  //chooseColor(features.ADMIN[0]),
         fillOpacity: 0.5,
         weight: 1.5
       };
@@ -91,7 +75,7 @@ d3.json(link, function(data) {
         }
       });
       // Giving each feature a pop-up with information about that specific feature
-      layer.bindPopup("<h3>Country: " + data.features.properties.ADMIN[0] + "</h3>");
+      // layer.bindPopup("<h3>Country: " + data.features.properties.ADMIN + "</h3>");
     }
   }).addTo(myMap);
 });
