@@ -1,0 +1,5 @@
+- grab input value
+- store input value
+- filter based on input value (use filter function, time == input value)
+- grab total pop values and use them to change colour of countries
+- add population values to pop up

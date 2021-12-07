@@ -18,7 +18,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 var link = "https://s3.amazonaws.com/rawstore.datahub.io/23f420f929e0e09c39d916b8aaa166fb.geojson"
 
 // Use this link to get the population data.
-var link2 = "data/PopulationByAgeSex";
+var link2 = "../../Data/clean_populations.json";
 
 // Function that will determine the color of a country based on its population
 function chooseColor(totalPopulation) {
@@ -34,22 +34,32 @@ function chooseColor(totalPopulation) {
   case totalPopulation > 10000000:
     return "yellow";
   default:
-    return "green";
+    return "white";
   }
 }
 
 
 // Grabbing our GeoJSON data..
 d3.json(link).then(function(data) {
-  // Creating a geoJSON layer with the retrieved data
-  console.log(data)
+  // read populations data
+  d3.json(link2).then(function(population) {
+    console.log(population);
+
+    // filter code goes here
+
+
+
+
+
+
+    // Creating a geoJSON layer with the retrieved data
   geoJson = L.geoJson(data, {
     // Style for each feature (in this case a country)
     style: function(feature) {
       return {
         color: "white",
         // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
-        fillColor: "white",  //chooseColor(features.ADMIN[0]),
+        fillColor: chooseColor(population[0].PopTotal),
         fillOpacity: 0.5,
         weight: 1.5
       };
@@ -75,7 +85,14 @@ d3.json(link).then(function(data) {
         }
       });
       // Giving each feature a pop-up with information about that specific feature
-      // layer.bindPopup("<h3>Country: " + data.features.properties.ADMIN + "</h3>");
+      layer.bindPopup("<h3>Country: " + feature.properties.ADMIN + "</h3>");
     }
   }).addTo(myMap);
+
+    });
 });
+
+
+
+
+
