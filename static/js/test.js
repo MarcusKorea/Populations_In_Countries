@@ -1,6 +1,8 @@
 var link = "https://s3.amazonaws.com/rawstore.datahub.io/23f420f929e0e09c39d916b8aaa166fb.geojson"
 // Grabbing our GeoJSON data..
 var link2 = "../../Data/clean_populations.json";
+
+
 // read populations data
 d3.json(link).then(function(data) {
     d3.json(link2).then(function(population) {
@@ -12,30 +14,63 @@ d3.json(link).then(function(data) {
 
         // Function that will determine the color of a country based on its population
         function chooseColor(totalPopulation) {
-            switch (true) {
-            case totalPopulation > 100000000:
-            return "darkred";
-            case totalPopulation > 50000000:
-            return "red";
-            case totalPopulation > 30000000:
-            return "orange";
-            case totalPopulation > 20000000:
-            return "gold";
-            case totalPopulation > 10000000:
-            return "yellow";
-            default:
-            return "white";
-            }
+            // switch (true) {
+            //     case totalPopulation > 50000  :
+            //     return "darkred";
+            //     case totalPopulation > 40000:
+            //     return "red";
+            //     case totalPopulation > 30000:
+            //     return "orange";
+            //     case totalPopulation > 20000:
+            //     return "gold";
+            //     case totalPopulation > 10000:
+            //     return "yellow";
+            //     default:
+            //     return "white";
+            //     }
+            var colours = [];
+
+           for(var i =0 ; i< data.length; i++){ 
+                var totalPopulation = data[i].PopTotal;
+
+                // console.log("HERE");
+                // console.log(data[i].PopTotal);
+
+               switch (true) {
+                case totalPopulation > 100000:
+                    colours.push("darkred");
+                    break;
+                case totalPopulation > 50000:
+                    colours.push("red");
+                    break;
+                case totalPopulation > 30000:
+                    colours.push("orange");
+                    break;
+                case totalPopulation > 20000:
+                    colours.push("gold");
+                    break;
+                case totalPopulation > 10000:
+                    colours.push("yellow");
+                    break;
+                default:
+                    colours.push("white");
+                }  
+        }
+        return colours;
+
         }
 
+        //filters the data
         function filterData(inputValue){
                 
             var filteredData = population.filter(row => row.Time == inputValue);
         
-            console.log(filteredData);
+            // console.log(filteredData);
 
             return filteredData;
         }
+
+        // Function to create graph when go button is clicked
         function runEnter(){
             // Prevent the page from refreshing
             d3.event.preventDefault();
@@ -48,11 +83,12 @@ d3.json(link).then(function(data) {
 
             var filtered = filterData(inputValue);
 
+            // chooseColor(filtered)
             filteredGraph(filtered);
         }
 
 
-        // create graph based off filter
+        // create map based off filter
         function filteredGraph(filteredData){
             // Create a map object
             var myMap = L.map("map", {
@@ -68,17 +104,38 @@ d3.json(link).then(function(data) {
             id: "mapbox/streets-v11",
             accessToken: API_KEY
             }).addTo(myMap);
-                // Creating a geoJSON layer with the retrieved data
+
+            // console.log("HEHEHEH");
+            // console.log(data.features[1].properties.ADMIN === filteredData[0].Location);
+
+            // Creating a geoJSON layer with the retrieved data
             geoJson = L.geoJson(data, {
                 // Style for each feature (in this case a country)
                 style: function(feature) {
-                return {
-                    color: "white",
-                    // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
-                    fillColor: chooseColor(filteredData.PopTotal),
-                    fillOpacity: 0.5,
-                    weight: 1.5
-                };
+                    // console.log(feature.properties.ADMIN);
+                    // console.log(filteredData[0].Location);
+                    // console.log(chooseColor(filteredData[0].PopTotal));
+                    for(var pos = 0; pos <169; pos++){
+                        console.log(pos);
+                        if(feature.properties.ADMIN === filteredData[pos].Location){
+                            return {
+                                color: "white",
+                                    // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
+                                fillColor: chooseColor(filteredData[pos].PopTotal),
+                                fillOpacity: 0.5,
+                                weight: 1.5
+                            };
+                        }
+                        else{
+                            return {
+                                color: "white",
+                                    // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
+                                fillOpacity: 0,
+                                weight: 1.5
+                            };
+                        }
+                    }
+                    
                 },
                 // Called on each feature
                 onEachFeature: function(feature, layer) {
@@ -103,11 +160,9 @@ d3.json(link).then(function(data) {
                 // Giving each feature a pop-up with information about that specific feature
                 layer.bindPopup("<h3>Country: " + feature.properties.ADMIN +"</h3>");
                 }
-            }).addTo(myMap);
-
-            filteredGraph()
+            }).addTo(myMap);   
         }
-        
+
 
     });
 });
