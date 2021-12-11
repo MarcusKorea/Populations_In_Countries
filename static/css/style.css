@@ -8,12 +8,19 @@ body {
   margin: 0;
 }
 
+h2 {
+  font-size: 35pt;
+  font-weight: bolder;
+  text-align: center;
+}
+
 .box {
   margin-left: 15px;
 }
 
-.filters .panel-body {
-  padding: 0;
+.filters .panel-body .panel {
+  padding: 15px;
+  margin-left: 15px;
 }
 
 .filters {
@@ -32,13 +39,6 @@ select {
   float: center;
   margin-left:15px;
   height: 300px;
-  width: 97%;
-}
-
-#my-dataviz {
-  float: center;
-  margin-left:15px;
-  height: 600px;
   width: 97%;
 }
 

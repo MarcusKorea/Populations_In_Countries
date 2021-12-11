@@ -35,7 +35,8 @@ d3.json(link).then(function(data) {
             var box = d3.select("#sample-metadata");
                     
             Object.entries(inputValue[0]).forEach(([key,value]) => {
-                box.append("h6").text(`${key}: ${value}`);
+                box.append("h6")
+                .text(`${key}: ${value}`);
                 });
             
         }
@@ -170,6 +171,11 @@ d3.json(link).then(function(data) {
                         
                         //filters by year and country
                         var finalFilter = filterCountry(filteredByYear,wantedCountry);
+
+                        // Clear contents of metadata table
+                        d3.select("#sample-metadata")
+                          .selectAll("h6")
+                          .remove();
 
                         // var finalFilter = filterCountry(filteredByYear,wantedCountry);
                         buildGraph(finalFilter);
