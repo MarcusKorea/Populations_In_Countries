@@ -12,55 +12,6 @@ d3.json(link).then(function(data) {
         
         filter.on("click",runEnter);
 
-        // Function that will determine the color of a country based on its population
-        function chooseColor(totalPopulation) {
-            switch (true) {
-                case totalPopulation > 50000  :
-                return "darkred";
-                case totalPopulation > 40000:
-                return "red";
-                case totalPopulation > 30000:
-                return "orange";
-                case totalPopulation > 20000:
-                return "gold";
-                case totalPopulation > 10000:
-                return "yellow";
-                default:
-                return "white";
-                }
-        //     var colours = [];
-
-        //    for(var i =0 ; i< data.length; i++){ 
-        //         var totalPopulation = data[i].PopTotal;
-
-        //         // console.log("HERE");
-        //         // console.log(data[i].PopTotal);
-
-        //        switch (true) {
-        //         case totalPopulation > 100000:
-        //             colours.push("darkred");
-        //             break;
-                    
-        //         case totalPopulation > 50000:
-        //             colours.push("red");
-        //             break;
-        //         case totalPopulation > 30000:
-        //             colours.push("orange");
-        //             break;
-        //         case totalPopulation > 20000:
-        //             colours.push("gold");
-        //             break;
-        //         case totalPopulation > 10000:
-        //             colours.push("yellow");
-        //             break;
-        //         default:
-        //             colours.push("white");
-        //         }  
-        // }
-        // return colours;
-
-        }
-
         //filters the data
         function filterData(inputValue){
                 
@@ -127,7 +78,6 @@ d3.json(link).then(function(data) {
 
             var filtered = filterData(inputValue);
 
-            // chooseColor(filtered)
             filteredGraph(filtered);
 
             metadata(filtered);
@@ -154,60 +104,17 @@ d3.json(link).then(function(data) {
             accessToken: API_KEY
             }).addTo(myMap);
 
-            // console.log(data.features[1].properties.ADMIN === filteredData[0].Location);
-            var pos = 0
-
             // Creating a geoJSON layer with the retrieved data
             geoJson = L.geoJson(data, {
                 // Style for each feature (in this case a country)
                 style: function(feature) {
-                    // console.log(feature.properties.ADMIN);
-                    // console.log(filteredData[0].Location);
-                    // console.log(chooseColor(filteredData[0].PopTotal));
-                    // console.log(filteredData[169].Location);
-                    // console.log("ABOVE")
-                    // console.log(pos);
-                    // console.log("current number");
-                    // console.log(pos);
-                    if(pos == 169){
-                        return //{color:"white"};
-                    }
-                    else{
-                        var a = filteredData[pos].Location
-                        console.log(a);
-                        var b = filteredData[pos].PopTotal
-                        // console.log(chooseColor(b));
-                        // console.log("Step number");
-                        // console.log(pos);
-                        // console.log("next number");
-                        // console.log(pos+1)
-                        pos += 1    
-                            if(feature.properties.ADMIN == filteredData[0].Location){
-                                return {
-                                    color: "white",
-                                        // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
-                                    fillColor: chooseColor(filteredData[0].PopTotal),
-                                    fillOpacity: 0.5,
-                                    weight: 1.5
-                                };
-                            }
-                            else{
-                                console.log(a)
-                                    console.log(feature.properties.ADMIN)
-                                return {
-                                    
-                                    color: "white",
-                                        // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
-                                    fillOpacity: 0,
-                                    weight: 1.5
-                                };
-                            }
-                    
-                        
-                    }
-
-
-                    
+                    return {
+                        color: "white",
+                        // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
+                        fillColor: "lightgreen",
+                        fillOpacity: 0.5,
+                        weight: 1.5
+                    };
                 },
                 // Called on each feature
                 onEachFeature: function(feature, layer) {
@@ -218,7 +125,9 @@ d3.json(link).then(function(data) {
                     layer = event.target;
                     layer.setStyle({
                         fillOpacity: 0.9
-                    });
+                    }),
+                    this.openPopup();
+                    this.closePopup();
                     },
                     // Set the features style back to the way it was
                     mouseout: function(event) {
@@ -231,13 +140,17 @@ d3.json(link).then(function(data) {
                 });
                 // Giving each feature a pop-up with information about that specific feature
                 layer.bindPopup("<h3>Country: " + feature.properties.ADMIN +"</h3>");
-                }
-            }).addTo(myMap);   
+                layer.on('mouseover', function (e) {
+                    this.openPopup();
+                });
+                layer.on('mouseout', function (e) {
+                    
+                });
+                        }
+                    }).addTo(myMap);   
         }
     });
 });
-
-
 
 // Create an initialisation function that will specify the first year (2021) to populate 
 // the web page on start-up.
@@ -245,7 +158,7 @@ d3.json(link).then(function(data) {
 // Initialisation function
 function init() {
       const firstInputValue = 2021;
-      filteredGraph(firstInputValue);
+      console.log(filterData(firstInputValue));
       metadata(firstInputValue); 
       buildGraph(firstInputValue);
 };
@@ -255,7 +168,7 @@ function init() {
   
 // Year Input Change function
 function optionChanged(newInputValue) {
-  filteredGraph(newInputValue);
+  filteredGraph(newInputValue   );
   metadata(newInputValue);
   buildGraph(newInputValue);
 };
