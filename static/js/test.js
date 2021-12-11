@@ -6,47 +6,55 @@ var link2 = "../../Data/clean_populations.json";
 // read populations data
 d3.json(link).then(function(data) {
     d3.json(link2).then(function(population) {
-        var population = population;
 
-        var filter = d3.select("#filter-btn")
-        
-        filter.on("click",runEnter);
 
-        //filters the data
-        function filterData(inputValue){
+        // ---------------- Create Functions --------------- //
+        //filter the year
+        function filterYear(inputValue){
                 
-            var filteredData = population.filter(row => row.Time == inputValue);
+            var filterByYear = population.filter(row => row.Time == inputValue);
         
-            // console.log(filteredData);
+            return filterByYear;
+        }
 
+        //filter the country
+        function filterCountry(data, country){       
+
+            var filteredData = data.filter(row => row.Location == country);
+                
             return filteredData;
         }
-        
+
         // Create the metadata table
         function metadata(inputValue){
-      
+            // if(inputValue.inputValue.length == 0){
+            //     box.append("h6").text('There is information for this country in this year.')
+            //     return;
+            // }
             // select where the data will be displayed
             var box = d3.select("#sample-metadata");
-            
+                    
             Object.entries(inputValue[0]).forEach(([key,value]) => {
                 box.append("h6").text(`${key}: ${value}`);
-            });
-    
+                });
+            
         }
-        
-        // Create the graph
+
+        // Create the bar graph
         function buildGraph(inputValue) {
+            // if(inputValue.inputValue.length == 0){
+            //     return;
+            // }
             //var populations = inputValue.slice(4,7);
             var result = inputValue[0];
             var male = result.PopMale;
             var female = result.PopFemale;
             var total = result.PopTotal;
-            console.log(result);
-            console.log(male);
-            console.log(female);
-            console.log(total);
+            // console.log(result);
+            // console.log(male);
+            // console.log(female);
+            // console.log(total);
 
-        
             var barData = [
               {
                 y: [male,female,total],
@@ -65,36 +73,49 @@ d3.json(link).then(function(data) {
             Plotly.newPlot("graph",barData,barLayout);
         };
 
+
+
+        // Store data
+        var population = population;
+
+        // Store filter button
+        var filter = d3.select("#filter-btn")
+
+        // When filter button is pressed use runEnter function
+        filter.on("click",runEnter);
+        
+
         // Function to create graph when go button is clicked
         function runEnter(){
             // Prevent the page from refreshing
             d3.event.preventDefault();
-            
+
             // Select the input element and get the raw HTML node
             var inputElement = d3.select("#datetime");
-        
+
             // Get the value property of the input element
             var inputValue = inputElement.property("value");
+            console.log(inputValue);
 
-            var filtered = filterData(inputValue);
-
-            filteredGraph(filtered);
-
-            metadata(filtered);
-        
-            buildGraph(filtered);
-
+            // create graph
+            filteredGraph(inputValue);
         }
 
-
         // create map based off filter
-        function filteredGraph(filteredData){
+        function filteredGraph(inputValue){
+
+                        
+            //filters by Year
+            var filteredByYear = filterYear(inputValue);   
+
+
             // Create a map object
             var myMap = L.map("map", {
                 center: [10, -20],
                 zoom: 2
             });
-
+            console.log("2")
+            console.log(inputValue)
             L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
             attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
             tileSize: 512,
@@ -118,34 +139,45 @@ d3.json(link).then(function(data) {
                 },
                 // Called on each feature
                 onEachFeature: function(feature, layer) {
+
                 // Setting various mouse events to change style when different events occur
                 layer.on({
                     // On mouse over, make the feature (neighborhood) more visible
                     mouseover: function(event) {
-                    layer = event.target;
-                    layer.setStyle({
-                        fillOpacity: 0.9
-                    }),
-                    this.openPopup();
-                    this.closePopup();
+                        layer = event.target;
+                        layer.setStyle({
+                            fillOpacity: 0.9
+                        });
                     },
                     // Set the features style back to the way it was
                     mouseout: function(event) {
-                    geoJson.resetStyle(event.target);
+                        geoJson.resetStyle(event.target);
                     },
-                    // When a feature (neighborhood) is clicked, fit that feature to the screen
+                    // When a feature (neighborhood) is clicked, fit that feature to the screen and update the graphs/table with data from the wanted year and country
                     click: function(event) {
-                    myMap.fitBounds(event.target.getBounds());
+
+                        myMap.fitBounds(event.target.getBounds());
+                        var wantedCountry = feature.properties.ADMIN;
+
+                        // Select the input element and get the raw HTML node
+                        var inputElement = d3.select("#datetime");
+
+                        // Get the value property of the input element
+                        var inputValue = inputElement.property("value");
+
+                        //filters by Year
+                        var filteredByYear = filterYear(inputValue); 
+                        
+                        //filters by year and country
+                        var finalFilter = filterCountry(filteredByYear,wantedCountry);
+
+                        // var finalFilter = filterCountry(filteredByYear,wantedCountry);
+                        buildGraph(finalFilter);
+                        metadata(finalFilter);
                     }
                 });
                 // Giving each feature a pop-up with information about that specific feature
                 layer.bindPopup("<h3>Country: " + feature.properties.ADMIN +"</h3>");
-                layer.on('mouseover', function (e) {
-                    this.openPopup();
-                });
-                layer.on('mouseout', function (e) {
-                    
-                });
                         }
                     }).addTo(myMap);   
         }
@@ -158,9 +190,7 @@ d3.json(link).then(function(data) {
 // Initialisation function
 function init() {
       const firstInputValue = 2021;
-      console.log(filterData(firstInputValue));
-      metadata(firstInputValue); 
-      buildGraph(firstInputValue);
+      filteredGraph(firstInputValue); 
 };
   
 // Create the Option Change function that will trigger the filteredGraph function, metadata funtion and buildGraph function when 
@@ -168,9 +198,7 @@ function init() {
   
 // Year Input Change function
 function optionChanged(newInputValue) {
-  filteredGraph(newInputValue   );
-  metadata(newInputValue);
-  buildGraph(newInputValue);
+    filteredGraph(newInputValue);
 };
   
 
