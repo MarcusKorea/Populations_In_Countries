@@ -40,7 +40,7 @@
                                   <li class="filter list-group-item">
                                     <label for="date">Enter a Year</label>
                                     <label for="date-range">1950-2100</label>
-                                    <input class="form-control" id="datetime" type="text" placeholder="2021">
+                                    <input class="form-control" id="datetime" onchange="optionChanged(this.value)" type="text" placeholder="2021">
                                   </li>
                                 </ul>
                               </div>
@@ -53,15 +53,24 @@
                     <!-- The div that holds our map -->
                     <div id="map" class="col-sm-12 col-md-12">
                     </div>
-
-
-                    <!-- Create a div where the graph will take place -->
-                    <div id="sample-metadata"></div>
-                    </div>
               </div>
           </div>
       </div>
-  </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-3">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Population Info</h3>
+            </div>
+            <div id="sample-metadata" class="panel-body"></div>
+          </div>
+        </div>
+        <div class="col-md-8" style="margin-left: 50px;">
+          <div id="graph"></div>
+        </div>
+      </div>
+   </div>
 
   <!-- Leaflet JavaScript -->
   <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>

@@ -35,6 +35,13 @@ select {
   width: 97%;
 }
 
+#my-dataviz {
+  float: center;
+  margin-left:15px;
+  height: 600px;
+  width: 97%;
+}
+
 /* Set Pop Up Style */
 h3 {
   font-size: medium;
