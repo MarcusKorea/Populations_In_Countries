@@ -1,6 +1,6 @@
 var link = "https://s3.amazonaws.com/rawstore.datahub.io/23f420f929e0e09c39d916b8aaa166fb.geojson"
 // Grabbing our GeoJSON data..
-var link2 = "clean_populations.json";
+var link2 = "../../Data/clean_populations.json";
 
 
 // read populations data
