@@ -12,7 +12,6 @@ from config import password
 
 from flask import Flask, jsonify,render_template
 
-import storedata 
 
 #################################################
 # Database Setup
