@@ -40,6 +40,9 @@ select {
   margin-left:15px;
   height: 300px;
   width: 97%;
+  border: white;
+  border-style: outset;
+  border-width: thick;
 }
 
 /* Set Pop Up Style */
@@ -49,4 +52,10 @@ h3 {
 
 p {
   font-size: small;
+}
+
+footer {
+  text-align: center;
+  padding: 3px;
+  color: white;
 }
