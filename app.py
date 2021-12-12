@@ -12,16 +12,18 @@ from config import password
 
 from flask import Flask, jsonify,render_template
 
-
-
+import storedata 
 
 #################################################
 # Database Setup
 #################################################
 
-engine = create_engine(f'postgresql://postgres:{password}@localhost:5432/sql-challange_db')
-query="""select *  from population"""
-queryresult=pd.read_sql_query(query,engine)
+# read in csv file
+path = "Data/clean_populations.csv"
+clean_pop = pd.read_csv(path)
+
+
+engine = create_engine(f'postgresql://postgres:{password}@localhost:5432')
 
 app = Flask(__name__)
 
@@ -32,24 +34,33 @@ app = Flask(__name__)
 
 @app.route("/")
 def welcome():
+
+    # creat connection
+    
+    conn = engine.connect()
+    conn.execute("commit")
+    # try:
+    conn.execution_options(isolation_level="AUTOCOMMIT").execute("create database populations")
+    clean_pop.to_sql(name="population", con = engine,if_exists = "append", index = False )
+    # except:
+    #     conn.execute("drop database populations")
+    #     conn.execution_options(isolation_level="AUTOCOMMIT").execute("drop database populations")
+    
+    #Read from postgresql
+    query = "select *  from population "
+    query_df=pd.read_sql_query(query,engine)
+
     return render_template("index.html", 
-                          data = queryresult)
-    # return (
-    #     f"Available Routes:<br/>"
-    #     f"Population: /api/v1.0/population<br/>"
-    # )
+                          data = query_df)
 
-# # Returns the jsonified  data  
+# Returns the jsonified  data  
 @app.route('/api/v1.0/population')
-def popdata():
-    # query="""select "Location", "Time", "PopMale","PopFemale","PopTotal"  from population """
-    query="""select *  from population"""
+def popdata(): 
+    #Read from postgresql
+    query = "select *  from population "
     queryresult=pd.read_sql_query(query,engine)
-    print(queryresult.values[0])
-
-    # return queryresult.to_json()
     return queryresult.to_json(orient='records')
 
  #4. Define main behavior
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug = True)
