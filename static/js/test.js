@@ -6,8 +6,6 @@ var link2 = "../../Data/clean_populations.json";
 // read populations data
 d3.json(link).then(function(data) {
     d3.json(link2).then(function(population) {
-
-
         // ---------------- Create Functions --------------- //
         //filter the year
         function filterYear(inputValue){
@@ -35,7 +33,8 @@ d3.json(link).then(function(data) {
             var box = d3.select("#sample-metadata");
                     
             Object.entries(inputValue[0]).forEach(([key,value]) => {
-                box.append("h6").text(`${key}: ${value}`);
+                box.append("h6")
+                .text(`${key}: ${value}`);
                 });
             
         }
@@ -171,6 +170,11 @@ d3.json(link).then(function(data) {
                         //filters by year and country
                         var finalFilter = filterCountry(filteredByYear,wantedCountry);
 
+                        // Clear contents of metadata table
+                        d3.select("#sample-metadata")
+                          .selectAll("h6")
+                          .remove();
+
                         // var finalFilter = filterCountry(filteredByYear,wantedCountry);
                         buildGraph(finalFilter);
                         metadata(finalFilter);
@@ -179,10 +183,27 @@ d3.json(link).then(function(data) {
                 // Giving each feature a pop-up with information about that specific feature
                 layer.bindPopup("<h3>Country: " + feature.properties.ADMIN +"</h3>");
                         }
-                    }).addTo(myMap);   
+                    }).addTo(myMap);  
+         
         }
-    });
-});
+        const Choreographer = require('choreographer-js')
+
+        let choreographer = new Choreographer({
+            animations: [
+                {
+                    range: [-1, window.innerHeight * 4],
+                    selector: 'p',
+                    type: 'scale',
+                    style: 'opacity',
+                    from: 0.2,
+                    to: 1
+                }
+            ]
+        })
+        
+        window.addEventListener('scroll', () => {
+            choreographer.runAnimationsAt(window.pageYOffset);
+        })
 
 // Create an initialisation function that will specify the first year (2021) to populate 
 // the web page on start-up.
@@ -204,4 +225,3 @@ function optionChanged(newInputValue) {
 
 // Initialise the dashboard
 init();
-

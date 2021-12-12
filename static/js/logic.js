@@ -183,7 +183,7 @@ d3.json(link).then(function(data) {
                 // Giving each feature a pop-up with information about that specific feature
                 layer.bindPopup("<h3>Country: " + feature.properties.ADMIN +"</h3>");
                         }
-                    }).addTo(myMap);   
+                    }).addTo(myMap);        
         }
     });
 });

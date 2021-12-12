@@ -45,6 +45,10 @@ select {
   border-width: thick;
 }
 
+#note {
+  font-size: x-small;
+}
+
 /* Set Pop Up Style */
 h3 {
   font-size: medium;
