@@ -12,7 +12,6 @@ from config import password
 
 from flask import Flask, jsonify,render_template
 
-import storedata 
 
 #################################################
 # Database Setup
@@ -49,6 +48,7 @@ def welcome():
     #Read from postgresql
     query = "select *  from population "
     query_df=pd.read_sql_query(query,engine)
+    query_df = query_df.drop("Unnamed: 0",axis = 1)
 
     return render_template("index.html", 
                           data = query_df)
@@ -59,6 +59,7 @@ def popdata():
     #Read from postgresql
     query = "select *  from population "
     queryresult=pd.read_sql_query(query,engine)
+    queryresult = queryresult.drop("Unnamed: 0",axis = 1)
     return queryresult.to_json(orient='records')
 
  #4. Define main behavior
