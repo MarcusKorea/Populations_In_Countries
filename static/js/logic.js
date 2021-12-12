@@ -1,13 +1,11 @@
 var link = "https://s3.amazonaws.com/rawstore.datahub.io/23f420f929e0e09c39d916b8aaa166fb.geojson"
 // Grabbing our GeoJSON data..
-var link2 = "../../Data/clean_populations.json";
+var link2 = "/api/v1.0/population";
 
 
 // read populations data
 d3.json(link).then(function(data) {
     d3.json(link2).then(function(population) {
-
-
         // ---------------- Create Functions --------------- //
         //filter the year
         function filterYear(inputValue){
