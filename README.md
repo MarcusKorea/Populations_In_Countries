@@ -51,8 +51,9 @@
 ## **Running all the code**
 **NOTE: Make sure there is no database named *populations* in PGAdmin** 
 ## **Running the dashboard**
-1. Enter your password for PostgreSQL in the config file.
-2. Then run the file *app.py*.
+1. Set your path to this folder. (If you are using Visual Studio Code just click File > Open Folder > Populations_In_Countries
+2. Enter your password for PostgreSQL in the config file.
+3. Then run the file *app.py*.
 
 ## **Running the jupyter notebooks**
 1. Before running any of the jupyter notebooks please install needed packages running the following code in the terminal.
